@@ -98,9 +98,4 @@ Router.post("/updateHighScore", async (req, res, next) => {
     }
 });
 
-Router.get("/", async(req, res, next) => {
-    const rooms = await Room.find({});
-    res.status(200).send(rooms);
-});
-
 module.exports = Router;
