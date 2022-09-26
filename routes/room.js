@@ -6,10 +6,14 @@ Router.post("/", async (req, res, next) => {
     try {
         const { players, leader, code, createdBy } = req.body;
         const roomId = `room-${createdBy.name}`;
-        const createdAt = new Date();
-        const room = new Room({ roomId, createdAt, code, players, leader, createdBy });
-        const doc = await room.save();
-        res.status(200).send(doc);
+        let room = await Room.findOne({ roomId });
+        if (room) return res.status(409).send("Room Already exists")
+        else {
+            const createdAt = new Date();
+            const room = new Room({ roomId, createdAt, code, players, leader, createdBy });
+            const doc = await room.save();
+            res.status(200).send(doc);
+        }
     } catch (error) {
         next(error);
     }
@@ -81,7 +85,7 @@ Router.post("/updateHighScore", async (req, res, next) => {
             const updatePlayer = players.find(p => p.name === gamePlayer.name);
             updatePlayer.highScore = gamePlayer.highScore;
 
-            players.sort((a,b) => Number(b.highScore) - Number(a.highScore))
+            players.sort((a, b) => Number(b.highScore) - Number(a.highScore))
 
             let newLeader = { highScore: "0" };
             players.forEach(player => {
