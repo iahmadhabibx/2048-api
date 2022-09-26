@@ -7,7 +7,7 @@ Router.post("/", async (req, res, next) => {
         const { players, leader, code, createdBy } = req.body;
         const roomId = `room-${createdBy.name}`;
         let room = await Room.findOne({ roomId });
-        if (room) return res.status(409).send("Room Already exists")
+        if (room) return res.status(409).send({message: "Room Already exists"})
         else {
             const createdAt = new Date();
             const room = new Room({ roomId, createdAt, code, players, leader, createdBy });
